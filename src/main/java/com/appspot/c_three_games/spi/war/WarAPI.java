@@ -30,7 +30,7 @@ import com.googlecode.objectify.NotFoundException;
 import com.googlecode.objectify.Work;
 
 @Api(
-  name = "WarAPI",
+  name = "warAPI",
   version = "v1",
   scopes = { Constants.EMAIL_SCOPE },
   clientIds = { Constants.WEB_CLIENT_ID, Constants.ANDROID_CLIENT_ID, Constants.IOS_CLIENT_ID },
@@ -315,7 +315,7 @@ public class WarAPI {
           // run evaluateRound
           queue.add(
             ofy().getTransaction(),
-            TaskOptions.Builder.withUrl("/tasks/EvaluateRound").param("gameId", gameId.toString())
+            TaskOptions.Builder.withUrl("/tasks/war/EvaluateRound").param("gameId", gameId.toString())
               .method(TaskOptions.Method.POST).countdownMillis(1000));
         }
 
