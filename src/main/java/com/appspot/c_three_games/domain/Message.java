@@ -21,6 +21,7 @@ import com.google.appengine.api.channel.ChannelServiceFactory;
 import com.google.gson.Gson;
 
 public class Message {
+  @SuppressWarnings("unused")
   private static final Logger log = Logger.getLogger(Message.class.getName());
 
   private ChannelMessage channelMessage;
@@ -32,8 +33,7 @@ public class Message {
   }
 
   public enum PlayerType {
-    GAME_STARTED, PLAYER_TURN_OVER, PLAYER_NOTINWAR, PLAYER_ALREADY_LOST, PLAYER_LOST, PLAYER_WON, GAME_NOTSTARTED,
-    WAR, PLAYER_WON_ROUND
+    GAME_STARTED, PLAYER_TURN_OVER, PLAYER_NOTINWAR, PLAYER_ALREADY_LOST, PLAYER_LOST, PLAYER_WON, GAME_NOTSTARTED, WAR, PLAYER_WON_ROUND
   }
 
   public static final class Builder {
@@ -123,13 +123,15 @@ public class Message {
           message = String.format("player lost:%s:%s:%s:", game, playerIds, playerNums);
           break;
         case PLAYER_PLAYED_CARD:
-          message = String.format("player played card:%s:%s:%s:%s:", game, playerIds, playerNums, cards);
+          message =
+              String.format("player played card:%s:%s:%s:%s:", game, playerIds, playerNums, cards);
           break;
         case PLAYER_WON:
           message = String.format("player won:%s:%s:%s:", game, playerIds, playerNums);
           break;
         case PLAYER_WON_ROUND:
-          message = String.format("player won round:%s:%s:%s:%s:", game, playerIds, playerNums, cards);
+          message =
+              String.format("player won round:%s:%s:%s:%s:", game, playerIds, playerNums, cards);
           break;
         case WAR:
           message = String.format("war:%s:%s:%s", game, playerIds, playerNums);
@@ -147,40 +149,56 @@ public class Message {
       }
       switch (builder.pType) {
         case GAME_STARTED:
-          gcmBody = new GCMBody.Builder().addRegistrationIds(playerRegIds).addData("gameId", builder.game.getId())
-            .addData("message", "game started").build();
+          gcmBody =
+              new GCMBody.Builder().addRegistrationIds(playerRegIds)
+                  .addData("gameId", builder.game.getId()).addData("message", "game started")
+                  .build();
           break;
         case PLAYER_ALREADY_LOST:
-          gcmBody = new GCMBody.Builder().addRegistrationIds(playerRegIds).addData("gameId", builder.game.getId())
-            .addData("message", "player already lost").build();
+          gcmBody =
+              new GCMBody.Builder().addRegistrationIds(playerRegIds)
+                  .addData("gameId", builder.game.getId())
+                  .addData("message", "player already lost").build();
           break;
         case PLAYER_LOST:
-          gcmBody = new GCMBody.Builder().addRegistrationIds(playerRegIds).addData("gameId", builder.game.getId())
-            .addData("message", "player lost").build();
+          gcmBody =
+              new GCMBody.Builder().addRegistrationIds(playerRegIds)
+                  .addData("gameId", builder.game.getId()).addData("message", "player lost")
+                  .build();
           break;
         case PLAYER_NOTINWAR:
-          gcmBody = new GCMBody.Builder().addRegistrationIds(playerRegIds).addData("gameId", builder.game.getId())
-            .addData("message", "player notinwar").build();
+          gcmBody =
+              new GCMBody.Builder().addRegistrationIds(playerRegIds)
+                  .addData("gameId", builder.game.getId()).addData("message", "player notinwar")
+                  .build();
           break;
         case PLAYER_TURN_OVER:
-          gcmBody = new GCMBody.Builder().addRegistrationIds(playerRegIds).addData("gameId", builder.game.getId())
-            .addData("message", "player turn over").build();
+          gcmBody =
+              new GCMBody.Builder().addRegistrationIds(playerRegIds)
+                  .addData("gameId", builder.game.getId()).addData("message", "player turn over")
+                  .build();
           break;
         case PLAYER_WON:
-          gcmBody = new GCMBody.Builder().addRegistrationIds(playerRegIds).addData("gameId", builder.game.getId())
-            .addData("message", "player won").build();
+          gcmBody =
+              new GCMBody.Builder().addRegistrationIds(playerRegIds)
+                  .addData("gameId", builder.game.getId()).addData("message", "player won").build();
           break;
         case GAME_NOTSTARTED:
-          gcmBody = new GCMBody.Builder().addRegistrationIds(playerRegIds).addData("gameId", builder.game.getId())
-            .addData("message", "game notstarted").build();
+          gcmBody =
+              new GCMBody.Builder().addRegistrationIds(playerRegIds)
+                  .addData("gameId", builder.game.getId()).addData("message", "game notstarted")
+                  .build();
           break;
         case PLAYER_WON_ROUND:
-          gcmBody = new GCMBody.Builder().addRegistrationIds(playerRegIds).addData("gameId", builder.game.getId())
-            .addData("message", "player won round").build();
+          gcmBody =
+              new GCMBody.Builder().addRegistrationIds(playerRegIds)
+                  .addData("gameId", builder.game.getId()).addData("message", "player won round")
+                  .build();
           break;
         case WAR:
-          gcmBody = new GCMBody.Builder().addRegistrationIds(playerRegIds).addData("gameId", builder.game.getId())
-            .addData("message", "war").build();
+          gcmBody =
+              new GCMBody.Builder().addRegistrationIds(playerRegIds)
+                  .addData("gameId", builder.game.getId()).addData("message", "war").build();
           break;
         default:
           break;
@@ -222,12 +240,14 @@ public class Message {
       URL url;
       HttpURLConnection urlConnection = null;
       Gson gson = new Gson();
+      @SuppressWarnings("unused")
       GCMResponse gcmResponse = new GCMResponse();
       try {
         url = new URL("https://android.googleapis.com/gcm/send");
         urlConnection = (HttpURLConnection) url.openConnection();
         urlConnection.setRequestMethod("POST");
-        urlConnection.setRequestProperty("Authorization", "key=" + "AIzaSyB8QE8fvKcKIAghdXFSEnvBfe25mdkFhgU");
+        urlConnection.setRequestProperty("Authorization", "key="
+            + "AIzaSyB8QE8fvKcKIAghdXFSEnvBfe25mdkFhgU");
         urlConnection.setRequestProperty("Content-Type", "application/json");
         urlConnection.setDoOutput(true);
         OutputStreamWriter writer = new OutputStreamWriter(urlConnection.getOutputStream());
@@ -255,17 +275,20 @@ public class Message {
   // message = String.format("new round started:%s:", game.getId());
   // break;
   // case PLAYER_LOST:
-  // message = String.format("player lost:%s:%s:%s:", game.getId(), player.getId(), player.getNum());
+  // message = String.format("player lost:%s:%s:%s:", game.getId(), player.getId(),
+  // player.getNum());
   // break;
   // case PLAYER_PLAYED_CARD:
-  // message = String.format("player played card:%s:%s:%s:%s:", game.getId(), player.getId(), player.getNum(),
+  // message = String.format("player played card:%s:%s:%s:%s:", game.getId(), player.getId(),
+  // player.getNum(),
   // card.getName());
   // break;
   // case PLAYER_WON:
   // message = String.format("player won:%s:%s:%s:", game.getId(), player.getId(), player.getNum());
   // break;
   // case PLAYER_WON_ROUND:
-  // message = String.format("player won round:%s:%s:%s:", game.getId(), player.getId(), player.getNum());
+  // message = String.format("player won round:%s:%s:%s:", game.getId(), player.getId(),
+  // player.getNum());
   // break;
   // case WAR:
   // message = String.format("war:%s:", game.getId());
@@ -327,7 +350,8 @@ public class Message {
   // url = new URL("https://android.googleapis.com/gcm/send");
   // urlConnection = (HttpURLConnection) url.openConnection();
   // urlConnection.setRequestMethod("POST");
-  // urlConnection.setRequestProperty("Authorization", "key=" + "AIzaSyB8QE8fvKcKIAghdXFSEnvBfe25mdkFhgU");
+  // urlConnection.setRequestProperty("Authorization", "key=" +
+  // "AIzaSyB8QE8fvKcKIAghdXFSEnvBfe25mdkFhgU");
   // urlConnection.setRequestProperty("Content-Type", "application/json");
   // urlConnection.setDoOutput(true);
   // OutputStreamWriter writer = new OutputStreamWriter(urlConnection.getOutputStream());
