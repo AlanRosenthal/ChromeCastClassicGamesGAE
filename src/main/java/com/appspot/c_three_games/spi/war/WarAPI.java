@@ -30,13 +30,13 @@ import com.googlecode.objectify.NotFoundException;
 import com.googlecode.objectify.Work;
 
 @Api(
-  name = "warApi",
+  name = "warAPI",
   version = "v1",
   scopes = { Constants.EMAIL_SCOPE },
   clientIds = { Constants.WEB_CLIENT_ID, Constants.ANDROID_CLIENT_ID, Constants.IOS_CLIENT_ID },
   audiences = { Constants.ANDROID_AUDIENCE },
-  description = "Game API")
-public class GameAPI {
+  description = "War API")
+public class WarAPI {
   @ApiMethod(name = "createGame", path = "createGame", httpMethod = HttpMethod.GET)
   public Game createGame() {
     Game game = new Game();
@@ -46,33 +46,33 @@ public class GameAPI {
     return game;
   }
 
-  @ApiMethod(name = "getGame", path = "game/war/getGame", httpMethod = HttpMethod.GET)
+  @ApiMethod(name = "getGame", path = "getGame", httpMethod = HttpMethod.GET)
   public Game getGame(@Named("gameId") Long gameId) {
-    return GameInternalAPI.getGame(gameId);
+    return WarInternalAPI.getGame(gameId);
   }
 
-  @ApiMethod(name = "getPlayer", path = "game/war/getPlayer", httpMethod = HttpMethod.GET)
+  @ApiMethod(name = "getPlayer", path = "getPlayer", httpMethod = HttpMethod.GET)
   public Player getPlayer(@Named("gameId") Long gameId, @Named("playerId") Long playerId) {
-    return GameInternalAPI.getPlayer(gameId, playerId);
+    return WarInternalAPI.getPlayer(gameId, playerId);
   }
 
-  @ApiMethod(name = "getPlayers", path = "game/war/getPlayers", httpMethod = HttpMethod.GET)
+  @ApiMethod(name = "getPlayers", path = "getPlayers", httpMethod = HttpMethod.GET)
   public List<Player> getPlayers(@Named("gameId") Long gameId) {
-    return GameInternalAPI.getPlayers(gameId);
+    return WarInternalAPI.getPlayers(gameId);
   }
 
-  @ApiMethod(name = "setPlayerRegId", path = "game/war/setPlayerRegId", httpMethod = HttpMethod.POST)
+  @ApiMethod(name = "setPlayerRegId", path = "setPlayerRegId", httpMethod = HttpMethod.POST)
   public Player setPlayerRegId(@Named("gameId") final Long gameId, @Named("playerId") final Long playerId,
     @Named("regId") final String regId) throws NotFoundException, ForbiddenException, ConflictException,
     BadRequestException {
     TxResult<Player> result = ofy().transact(new Work<TxResult<Player>>() {
       @Override
       public TxResult<Player> run() {
-        Game game = GameInternalAPI.getGame(gameId);
+        Game game = WarInternalAPI.getGame(gameId);
         if (game == null) {
           return new TxResult<>(new BadRequestException("Game ID invalid"));
         }
-        Player player = GameInternalAPI.getPlayer(gameId, playerId);
+        Player player = WarInternalAPI.getPlayer(gameId, playerId);
         if (player == null) {
           return new TxResult<>(new BadRequestException("Player ID invalid"));
         }
@@ -84,7 +84,7 @@ public class GameAPI {
     return result.getResult();
   }
 
-  @ApiMethod(name = "createChannelToken", path = "game/war/createChannelToken", httpMethod = HttpMethod.GET)
+  @ApiMethod(name = "createChannelToken", path = "createChannelToken", httpMethod = HttpMethod.GET)
   public ChannelToken createChannelToken(@Named("gameId") Long gameId) {
     ChannelService channelService = ChannelServiceFactory.getChannelService();
     String token = channelService.createChannel(gameId.toString());
@@ -97,7 +97,7 @@ public class GameAPI {
     return channelToken;
   }
 
-  @ApiMethod(name = "joinGame", path = "game/war/joinGame", httpMethod = HttpMethod.GET)
+  @ApiMethod(name = "joinGame", path = "joinGame", httpMethod = HttpMethod.GET)
   public Player joinGame(@Named("gameId") final Long gameId, @Named("name") final String name)
     throws NotFoundException, ForbiddenException, ConflictException, BadRequestException {
     TxResult<Player> result = ofy().transact(new Work<TxResult<Player>>() {
@@ -142,7 +142,7 @@ public class GameAPI {
     return result.getResult();
   }
 
-  @ApiMethod(name = "startGame", path = "game/war/startGame", httpMethod = HttpMethod.GET)
+  @ApiMethod(name = "startGame", path = "startGame", httpMethod = HttpMethod.GET)
   public Game startGame(@Named("gameId") final Long gameId) throws NotFoundException, ForbiddenException,
     ConflictException, BadRequestException {
     TxResult<Game> result = ofy().transact(new Work<TxResult<Game>>() {
@@ -194,7 +194,7 @@ public class GameAPI {
     return result.getResult();
   }
 
-  @ApiMethod(name = "playCard", path = "game/war/playCard", httpMethod = HttpMethod.POST)
+  @ApiMethod(name = "playCard", path = "playCard", httpMethod = HttpMethod.POST)
   public Player playCard(@Named("gameId") final Long gameId, @Named("playerId") final Long playerId)
     throws NotFoundException, ForbiddenException, ConflictException, BadRequestException {
     final Queue queue = QueueFactory.getDefaultQueue();
@@ -315,7 +315,7 @@ public class GameAPI {
           // run evaluateRound
           queue.add(
             ofy().getTransaction(),
-            TaskOptions.Builder.withUrl("/tasks/EvaluateRound").param("gameId", gameId.toString())
+            TaskOptions.Builder.withUrl("/tasks/war/EvaluateRound").param("gameId", gameId.toString())
               .method(TaskOptions.Method.POST).countdownMillis(1000));
         }
 

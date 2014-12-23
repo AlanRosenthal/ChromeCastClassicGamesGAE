@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	    <title>Card Game!</title>
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+		<script src="/_ah/channel/jsapi"></script>
+	    <script src="/js/war/chromecast.js"></script>
+		<script src="//www.gstatic.com/cast/sdk/libs/receiver/2.0.0/cast_receiver.js"></script>
+	    <script src="/js/war/appengine.js"></script>
+	    <script src="/js/war/war.js"></script>
+	    <script src="https://apis.google.com/js/client.js?onload=initWarAPI"></script>
+	    <link rel="stylesheet" type="text/css" href="/css/main.css"></link>
+	    <link rel="stylesheet" type="text/css" href="/css/game.css"></link>
+	    <link rel="stylesheet" type="text/css" href="/css/players.css"></link>
+	    <link rel="stylesheet" type="text/css" href="/css/cards.css"></link>
+	</head>
+	<body>
+		<div class="board">
+			<div class="title"></div>
+			<div class="game_playing hidden">
+				<div class="cards">
+					<div class="card facedown hidden" id="AC">
+						<img class="front_card" src="../img/cards/AC.png" />
+						<img class="back_card" src="../img/cards/Back-Blue.png" />
+					</div>
+					<div class="card facedown hidden" id="2C">
+						<img class="front_card" src="../img/cards/2C.png" />
+						<img class="back_card" src="../img/cards/Back-Blue.png" />
+					</div>
+					<div class="card facedown hidden" id="3C">
+						<img class="front_card" src="../img/cards/3C.png" />
+						<img class="back_card" src="../img/cards/Back-Blue.png" />
+					</div>
+					<div class="card facedown hidden" id="4C">
+						<img class="front_card" src="../img/cards/4C.png" />
+						<img class="back_card" src="../img/cards/Back-Blue.png" />
+					</div>
+					<div class="card facedown hidden" id="5C">
+						<img class="front_card" src="../img/cards/5C.png" />
+						<img class="back_card" src="../img/cards/Back-Blue.png" />
+					</div>
+					<div class="card facedown hidden" id="6C">
+						<img class="front_card" src="../img/cards/6C.png" />
+						<img class="back_card" src="../img/cards/Back-Blue.png" />
+					</div>
+					<div class="card facedown hidden" id="7C">
+						<img class="front_card" src="../img/cards/7C.png" />
+						<img class="back_card" src="../img/cards/Back-Blue.png" />
+					</div>
+					<div class="card facedown hidden" id="8C">
+						<img class="front_card" src="../img/cards/8C.png" />
+						<img class="back_card" src="../img/cards/Back-Blue.png" />
+					</div>
+					<div class="card facedown hidden" id="9C">
+						<img class="front_card" src="../img/cards/9C.png" />
+						<img class="back_card" src="../img/cards/Back-Blue.png" />
+					</div>
+					<div class="card facedown hidden" id="10C">
+						<img class="front_card" src="../img/cards/10C.png" />
+						<img class="back_card" src="../img/cards/Back-Blue.png" />
+					</div>
+					<div class="card facedown hidden" id="JC">
+						<img class="front_card" src="../img/cards/JC.png" />
+						<img class="back_card" src="../img/cards/Back-Blue.png" />
+					</div>
+					<div class="card facedown hidden" id="QC">
+						<img class="front_card" src="../img/cards/QC.png" />
+						<img class="back_card" src="../img/cards/Back-Blue.png" />
+					</div>
+					<div class="card facedown hidden" id="KC">
+						<img class="front_card" src="../img/cards/KC.png" />
+						<img class="back_card" src="../img/cards/Back-Blue.png" />
+					</div>
+					<div class="card facedown hidden" id="AD">
+						<img class="front_card" src="../img/cards/AD.png" />
+						<img class="back_card" src="../img/cards/Back-Blue.png" />
+					</div>
+					<div class="card facedown hidden" id="2D">
+						<img class="front_card" src="../img/cards/2D.png" />
+						<img class="back_card" src="../img/cards/Back-Blue.png" />
+					</div>
+					<div class="card facedown hidden" id="3D">
+						<img class="front_card" src="../img/cards/3D.png" />
+						<img class="back_card" src="../img/cards/Back-Blue.png" />
+					</div>
+					<div class="card facedown hidden" id="4D">
+						<img class="front_card" src="../img/cards/4D.png" />
+						<img class="back_card" src="../img/cards/Back-Blue.png" />
+					</div>
+					<div class="card facedown hidden" id="5D">
+						<img class="front_card" src="../img/cards/5D.png" />
+						<img class="back_card" src="../img/cards/Back-Blue.png" />
+					</div>
+					<div class="card facedown hidden" id="6D">
+						<img class="front_card" src="../img/cards/6D.png" />
+						<img class="back_card" src="../img/cards/Back-Blue.png" />
+					</div>
+					<div class="card facedown hidden" id="7D">
+						<img class="front_card" src="../img/cards/7D.png" />
+						<img class="back_card" src="../img/cards/Back-Blue.png" />
+					</div>
+					<div class="card facedown hidden" id="8D">
+						<img class="front_card" src="../img/cards/8D.png" />
+						<img class="back_card" src="../img/cards/Back-Blue.png" />
+					</div>
+					<div class="card facedown hidden" id="9D">
+						<img class="front_card" src="../img/cards/9D.png" />
+						<img class="back_card" src="../img/cards/Back-Blue.png" />
+					</div>
+					<div class="card facedown hidden" id="10D">
+						<img class="front_card" src="../img/cards/10D.png" />
+						<img class="back_card" src="../img/cards/Back-Blue.png" />
+					</div>
+					<div class="card facedown hidden" id="JD">
+						<img class="front_card" src="../img/cards/JD.png" />
+						<img class="back_card" src="../img/cards/Back-Blue.png" />
+					</div>
+					<div class="card facedown hidden" id="QD">
+						<img class="front_card" src="../img/cards/QD.png" />
+						<img class="back_card" src="../img/cards/Back-Blue.png" />
+					</div>
+					<div class="card facedown hidden" id="KD">
+						<img class="front_card" src="../img/cards/KD.png" />
+						<img class="back_card" src="../img/cards/Back-Blue.png" />
+					</div>
+					<div class="card facedown hidden" id="AH">
+						<img class="front_card" src="../img/cards/AH.png" />
+						<img class="back_card" src="../img/cards/Back-Blue.png" />
+					</div>
+					<div class="card facedown hidden" id="2H">
+						<img class="front_card" src="../img/cards/2H.png" />
+						<img class="back_card" src="../img/cards/Back-Blue.png" />
+					</div>
+					<div class="card facedown hidden" id="3H">
+						<img class="front_card" src="../img/cards/3H.png" />
+						<img class="back_card" src="../img/cards/Back-Blue.png" />
+					</div>
+					<div class="card facedown hidden" id="4H">
+						<img class="front_card" src="../img/cards/4H.png" />
+						<img class="back_card" src="../img/cards/Back-Blue.png" />
+					</div>
+					<div class="card facedown hidden" id="5H">
+						<img class="front_card" src="../img/cards/5H.png" />
+						<img class="back_card" src="../img/cards/Back-Blue.png" />
+					</div>
+					<div class="card facedown hidden" id="6H">
+						<img class="front_card" src="../img/cards/6H.png" />
+						<img class="back_card" src="../img/cards/Back-Blue.png" />
+					</div>
+					<div class="card facedown hidden" id="7H">
+						<img class="front_card" src="../img/cards/7H.png" />
+						<img class="back_card" src="../img/cards/Back-Blue.png" />
+					</div>
+					<div class="card facedown hidden" id="8H">
+						<img class="front_card" src="../img/cards/8H.png" />
+						<img class="back_card" src="../img/cards/Back-Blue.png" />
+					</div>
+					<div class="card facedown hidden" id="9H">
+						<img class="front_card" src="../img/cards/9H.png" />
+						<img class="back_card" src="../img/cards/Back-Blue.png" />
+					</div>
+					<div class="card facedown hidden" id="10H">
+						<img class="front_card" src="../img/cards/10H.png" />
+						<img class="back_card" src="../img/cards/Back-Blue.png" />
+					</div>
+					<div class="card facedown hidden" id="JH">
+						<img class="front_card" src="../img/cards/JH.png" />
+						<img class="back_card" src="../img/cards/Back-Blue.png" />
+					</div>
+					<div class="card facedown hidden" id="QH">
+						<img class="front_card" src="../img/cards/QH.png" />
+						<img class="back_card" src="../img/cards/Back-Blue.png" />
+					</div>
+					<div class="card facedown hidden" id="KH">
+						<img class="front_card" src="../img/cards/KH.png" />
+						<img class="back_card" src="../img/cards/Back-Blue.png" />
+					</div>
+					<div class="card facedown hidden" id="AS">
+						<img class="front_card" src="../img/cards/AS.png" />
+						<img class="back_card" src="../img/cards/Back-Blue.png" />
+					</div>
+					<div class="card facedown hidden" id="2S">
+						<img class="front_card" src="../img/cards/2S.png" />
+						<img class="back_card" src="../img/cards/Back-Blue.png" />
+					</div>
+					<div class="card facedown hidden" id="3S">
+						<img class="front_card" src="../img/cards/3S.png" />
+						<img class="back_card" src="../img/cards/Back-Blue.png" />
+					</div>
+					<div class="card facedown hidden" id="4S">
+						<img class="front_card" src="../img/cards/4S.png" />
+						<img class="back_card" src="../img/cards/Back-Blue.png" />
+					</div>
+					<div class="card facedown hidden" id="5S">
+						<img class="front_card" src="../img/cards/5S.png" />
+						<img class="back_card" src="../img/cards/Back-Blue.png" />
+					</div>
+					<div class="card facedown hidden" id="6S">
+						<img class="front_card" src="../img/cards/6S.png" />
+						<img class="back_card" src="../img/cards/Back-Blue.png" />
+					</div>
+					<div class="card facedown hidden" id="7S">
+						<img class="front_card" src="../img/cards/7S.png" />
+						<img class="back_card" src="../img/cards/Back-Blue.png" />
+					</div>
+					<div class="card facedown hidden" id="8S">
+						<img class="front_card" src="../img/cards/8S.png" />
+						<img class="back_card" src="../img/cards/Back-Blue.png" />
+					</div>
+					<div class="card facedown hidden" id="9S">
+						<img class="front_card" src="../img/cards/9S.png" />
+						<img class="back_card" src="../img/cards/Back-Blue.png" />
+					</div>
+					<div class="card facedown hidden" id="10S">
+						<img class="front_card" src="../img/cards/10S.png" />
+						<img class="back_card" src="../img/cards/Back-Blue.png" />
+					</div>
+					<div class="card facedown hidden" id="JS">
+						<img class="front_card" src="../img/cards/JS.png" />
+						<img class="back_card" src="../img/cards/Back-Blue.png" />
+					</div>
+					<div class="card facedown hidden" id="QS">
+						<img class="front_card" src="../img/cards/QS.png" />
+						<img class="back_card" src="../img/cards/Back-Blue.png" />
+					</div>
+					<div class="card facedown hidden" id="KS">
+						<img class="front_card" src="../img/cards/KS.png" />
+						<img class="back_card" src="../img/cards/Back-Blue.png" />
+					</div>
+					<div class="lost hidden" id="player_0"><img src="../img/lost.png" /></div>
+				</div>
+				<div class="player_names">
+					<span class="player_name" id="player_0"></span>
+					<span class="player_name" id="player_1"></span>
+					<span class="player_name" id="player_2"></span>
+					<span class="player_name" id="player_3"></span>				
+				</div>
+			</div>
+			<div class="game_joining hidden">
+				<div class="players">
+					<span class="player_title">Players</span>
+					<ol class="player_names">
+						<li><span class="player_name_open" id="joining_player_0">Open...</span></li>
+						<li><span class="player_name_open" id="joining_player_1">Open...</span></li>
+						<li><span class="player_name_open" id="joining_player_2">Open...</span></li>
+						<li><span class="player_name_open" id="joining_player_3">Open...</span></li>
+					</ol>
+				</div>
+				<div class="qrcode"></div>
+			</div>
+		</div>
+		<script src="/js/war/channel.js"></script>
+	</body>
+</html>

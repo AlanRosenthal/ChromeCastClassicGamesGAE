@@ -1,0 +1,90 @@
+.game_joining {
+	position: absolute;
+	top: 50px;
+	left: 0px;
+	width: 1080px;
+	height: 470px;
+	margin-top: 25px;
+	margin-left: 50px;
+	margin-right: 50px;
+	margin-bottom: 25px;
+}
+
+.game_joining > .players {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	width: 560px;
+	height: 520px;
+/* 	background-color: yellow; */
+}
+
+.game_joining > .players > .player_title {
+	font-size: 75px;
+	text-align: center;
+	color: red;
+	font-weight: bold;
+	text-decoration: underline;
+	display: block;
+}
+
+.game_joining > .players > .ordered_list {
+	color: red;
+}
+
+.game_joining > .players > .player_names {
+	margin-left: 50px;
+	margin-top: 0px;
+	margin-bottom: 0px;
+	margin-right: 50px;
+	font-size: 60px;
+	display: block;
+	color: red;
+}
+
+.player_name_open {
+	 font-style: italic;
+	 color: lightpink;
+}
+
+.player_name_closed {
+	 font-style: normal;
+	 color: red;
+}
+
+.game_joining > .qrcode {
+	position: absolute;
+	height: 520px;
+	width: 520px;
+	top: 0px;
+	left: 560px;
+}
+
+.game_playing {
+	position: absolute;
+	top: 50px;
+	left: 0px;
+	width: 1180px;
+	height: 570px;
+}
+
+.game_playing > .cards {
+	width: 1180px;
+	height: 500px;
+	top: 35px;
+	left: 0px;
+	position: absolute;
+}
+
+.game_playing > .player_names > .player_name {
+	width: 590px;
+	height: 35px;
+	position: absolute;
+	font-size: 35px;
+	color: red;
+}
+
+.player_lost {
+	position: absolute;
+}
+
