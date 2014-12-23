@@ -40,7 +40,22 @@
             <artifactId>javax.inject</artifactId>
             <version>1</version>
         </dependency>
-
+        <dependency>
+            <groupId>javax.jdo</groupId>
+            <artifactId>jdo-api</artifactId>
+            <version>3.0.1</version>
+        </dependency>
+		<dependency>
+			<groupId>com.googlecode.objectify</groupId>
+			<artifactId>objectify</artifactId>
+			<version>5.1.1</version>
+		</dependency>
+		<dependency>
+    		<groupId>com.google.code.gson</groupId>
+    		<artifactId>gson</artifactId>
+    		<version>2.3.1</version>
+		</dependency>
+        
         <!-- Test Dependencies -->
         <dependency>
             <groupId>junit</groupId>
