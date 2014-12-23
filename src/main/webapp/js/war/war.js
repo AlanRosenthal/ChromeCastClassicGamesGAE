@@ -11,8 +11,8 @@ var positions = [{}, {}, {
   'playerX': [0, 590],
   'playerY': [0, 535],
   'playerAlign': ['left', 'right'],
-  'playerLostX': [0, 730],
-  'playerLostY': [35, 385]
+  'playerLostX': [5, 725],
+  'playerLostY': [40, 380]
 }, {
   // three players
   'handX': [0, 1062, 1062],
@@ -26,8 +26,8 @@ var positions = [{}, {}, {
   'playerX': [0, 590, 590],
   'playerY': [0, 0, 535],
   'playerAlign': ['left', 'right', 'right'],
-  'playerLostX': [0, 730, 730],
-  'playerLostY': [35, 35, 385]
+  'playerLostX': [5, 725, 725],
+  'playerLostY': [40, 40, 380]
 }, {
   // four players
   'handX': [0, 1062, 0, 1062],
@@ -41,8 +41,8 @@ var positions = [{}, {}, {
   'playerX': [0, 590, 0, 590],
   'playerY': [0, 0, 535, 535],
   'playerAlign': ['left', 'right', 'left', 'right'],
-  'playerLostX': [0, 730, 0, 730],
-  'playerLostY': [35, 35, 385, 385]
+  'playerLostX': [5, 725, 5, 725],
+  'playerLostY': [40, 40, 380, 380]
 }];
 
 var card_z_index = 11;
@@ -91,6 +91,7 @@ function updateGame() {
     case "PLAYING":
     case "EVALUATING":
     case "ROUNDOVER":
+      $('.title').text("Let's Play War!");
       $('.game_joining').addClass('hidden');
       $('.game_playing').removeClass('hidden');
       apiGetPlayers(function() {
@@ -145,11 +146,11 @@ function updateGame() {
             break;
           case "WON":
             addPlayer(p.num);
-            playerWon(p.num);
+            playerWon(p.num, false);
             break;
           case "LOST":
             addPlayer(p.num);
-            playerLost(p.num);
+            playerLost(p.num, false);
             break;
           }
         });
@@ -179,15 +180,15 @@ function playerWonRound(playerNum) {
 }
 
 function playerLost(playerNum, sound) {
-  var e = $('<img id="player_' + playerNum + '" src="./img/lost.png" />');
+  // var e = $('<img id="player_' + playerNum + '" src="./img/lost.png" />');
+  e = $('.player_lost#player_' + playerNum);
   var top = positions[game.players].playerLostY[parseInt(playerNum)];
   var left = positions[game.players].playerLostX[parseInt(playerNum)];
   e.css({
     'top': top + 'px',
     'left': left + 'px'
   });
-  e.addClass('player_lost');
-  $('.game_playing').append(e);
+  e.removeClass('hidden');
   apiGetPlayer(players[playerNum].id);
   console.log("player " + playerNum + " lost");
   if (sound) {
@@ -195,8 +196,12 @@ function playerLost(playerNum, sound) {
   }
 }
 
-function playerWon(playerNum) {
+function playerWon(playerNum, sound) {
+  $('.title').text(players[playerNum].name + "won!");
   console.log("player " + playerNum + " won");
+  if (sound) {
+    // play sound
+  }
 }
 
 function playerWar() {
