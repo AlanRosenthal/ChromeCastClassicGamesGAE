@@ -1,0 +1,69 @@
+body {
+	margin:0px;
+}
+
+.board {
+    position: relative;
+    margin: 50px;
+    width: 1180px;
+    height: 620px;
+/*     background-color: cyan; */
+}
+
+.hidden {
+	visibility: hidden;
+}
+
+.title {
+	position: absolute;
+	height: 50px;
+	width: 100%;
+	font-size: 40px;
+	line-height: 50px;
+	text-align: center;
+	color: red;
+	font-weight: bold;
+/* 	background-color: green; */
+}
+
+/* .background0 { */
+/* 	position: absolute; */
+/* 	width: 590px; */
+/* 	height: 250px; */
+/* 	border-style: solid; */
+/* 	box-sizing: border-box; */
+/* 	border-width: 5px; */
+/* 	top: 85px; */
+/* 	left: 0px; */
+/* } */
+/* .background1 { */
+/* 	position: absolute; */
+/* 	width: 590px; */
+/* 	height: 250px; */
+/* 	border-style: solid; */
+/* 	box-sizing: border-box; */
+/* 	border-width: 5px; */
+/* 	top: 85px; */
+/* 	left: 590px; */
+/* } */
+/* .background2 { */
+/* 	position: absolute; */
+/* 	width: 590px; */
+/* 	height: 250px; */
+/* 	border-style: solid; */
+/* 	box-sizing: border-box; */
+/* 	border-width: 5px; */
+/* 	top: 335px; */
+/* 	left: 0px; */
+/* } */
+/* .background3 { */
+/* 	position: absolute; */
+/* 	width: 590px; */
+/* 	height: 250px; */
+/* 	border-style: solid; */
+/* 	box-sizing: border-box; */
+/* 	border-width: 5px; */
+/* 	top: 335px; */
+/* 	left: 590px; */
+/* } */
+
