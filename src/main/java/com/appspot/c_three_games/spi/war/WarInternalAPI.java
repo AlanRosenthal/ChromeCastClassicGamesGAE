@@ -9,7 +9,7 @@ import com.appspot.c_three_games.domain.war.Player;
 import com.google.appengine.api.datastore.ReadPolicy.Consistency;
 import com.googlecode.objectify.Key;
 
-public class GameInternalAPI {
+public class WarInternalAPI {
 
     public static Game getGame(Long gameId) {
         Game game = ofy().consistency(Consistency.STRONG).load().type(Game.class).id(gameId).now();

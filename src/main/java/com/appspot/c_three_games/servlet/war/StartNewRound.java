@@ -16,7 +16,7 @@ import com.appspot.c_three_games.domain.Message;
 import com.appspot.c_three_games.domain.war.Game;
 import com.appspot.c_three_games.domain.war.Player;
 import com.appspot.c_three_games.domain.war.TxResult;
-import com.appspot.c_three_games.spi.war.GameInternalAPI;
+import com.appspot.c_three_games.spi.war.WarInternalAPI;
 import com.google.api.server.spi.response.BadRequestException;
 import com.google.api.server.spi.response.ConflictException;
 import com.google.api.server.spi.response.ForbiddenException;
@@ -34,7 +34,7 @@ public class StartNewRound extends HttpServlet {
       @Override
       public TxResult<Game> run() {
         ArrayList<Message> msgs = new ArrayList<Message>();
-        Game game = GameInternalAPI.getGame(gameId);
+        Game game = WarInternalAPI.getGame(gameId);
         if (game == null) {
           return new TxResult<>(new BadRequestException("Game ID invalid"));
         }
@@ -50,7 +50,7 @@ public class StartNewRound extends HttpServlet {
           case EVALUATING:
             return new TxResult<>(new BadRequestException("Round needs to be evaluated"));
           case ROUNDOVER:
-            players = GameInternalAPI.getPlayers(gameId);
+            players = WarInternalAPI.getPlayers(gameId);
             break;
           default:
             return new TxResult<>(new BadRequestException("Game is in an unknown/unexpected state: " + game.getState()));
