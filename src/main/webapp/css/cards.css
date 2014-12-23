@@ -25,21 +25,17 @@
 }
 
 .facedown > .front_card {
-/* 	visibility: hidden; */
 	opacity: 0;
 }
 
 .facedown > .back_card {
-/* 	visibility: visible; */
 	opacity: 1;
 }
 
 .faceup > .front_card {
-/* 	visibility: visible; */
 	opacity: 1;
 }
 
 .faceup > .back_card {
-/* 	visibility: hidden; */
 	opacity: 0;
 }
