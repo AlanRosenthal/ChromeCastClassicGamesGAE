@@ -76,7 +76,7 @@
 	position: absolute;
 }
 
-.game_playing > .player_names > .player_name {
+.game_playing > .players > .player_name {
 	width: 590px;
 	height: 35px;
 	position: absolute;
@@ -84,7 +84,11 @@
 	color: red;
 }
 
-.player_lost {
+.game_playing > .players > .player_lost {
+	position: absolute;
+}
+
+.game_playing > .players > .player_won {
 	position: absolute;
 }
 

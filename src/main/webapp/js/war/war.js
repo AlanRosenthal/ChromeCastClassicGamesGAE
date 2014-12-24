@@ -11,8 +11,8 @@ var positions = [{}, {}, {
   'playerX': [0, 590],
   'playerY': [0, 535],
   'playerAlign': ['left', 'right'],
-  'playerLostX': [5, 725],
-  'playerLostY': [40, 380]
+  'playerResultX': [5, 725],
+  'playerResultY': [40, 380]
 }, {
   // three players
   'handX': [0, 1062, 1062],
@@ -26,8 +26,8 @@ var positions = [{}, {}, {
   'playerX': [0, 590, 590],
   'playerY': [0, 0, 535],
   'playerAlign': ['left', 'right', 'right'],
-  'playerLostX': [5, 725, 725],
-  'playerLostY': [40, 40, 380]
+  'playerResultX': [5, 725, 725],
+  'playerResultY': [40, 40, 380]
 }, {
   // four players
   'handX': [0, 1062, 0, 1062],
@@ -41,8 +41,8 @@ var positions = [{}, {}, {
   'playerX': [0, 590, 0, 590],
   'playerY': [0, 0, 535, 535],
   'playerAlign': ['left', 'right', 'left', 'right'],
-  'playerLostX': [5, 725, 5, 725],
-  'playerLostY': [40, 40, 380, 380]
+  'playerResultX': [5, 725, 5, 725],
+  'playerResultY': [40, 40, 380, 380]
 }];
 
 var card_z_index = 11;
@@ -130,6 +130,8 @@ function updateGame() {
       });
       break;
     case "OVER":
+      $('.game_joining').addClass('hidden');
+      $('.game_playing').removeClass('hidden');
       apiGetPlayers(function() {
         players.forEach(function(p) {
           switch (p.state) {
@@ -181,9 +183,9 @@ function playerWonRound(playerNum) {
 
 function playerLost(playerNum, sound) {
   // var e = $('<img id="player_' + playerNum + '" src="./img/lost.png" />');
-  e = $('.player_lost#player_' + playerNum);
-  var top = positions[game.players].playerLostY[parseInt(playerNum)];
-  var left = positions[game.players].playerLostX[parseInt(playerNum)];
+  e = $('.players .player_lost#player_' + playerNum);
+  var top = positions[game.players].playerResultY[parseInt(playerNum)];
+  var left = positions[game.players].playerResultX[parseInt(playerNum)];
   e.css({
     'top': top + 'px',
     'left': left + 'px'
@@ -197,7 +199,16 @@ function playerLost(playerNum, sound) {
 }
 
 function playerWon(playerNum, sound) {
-  $('.title').text(players[playerNum].name + "won!");
+  $('.cards').addClass('hidden');
+  e = $('.players .player_won#player_' + playerNum);
+  var top = positions[game.players].playerResultY[parseInt(playerNum)];
+  var left = positions[game.players].playerResultX[parseInt(playerNum)];
+  e.css({
+    'top': top + 'px',
+    'left': left + 'px'
+  });
+  e.removeClass('hidden');
+  $('.title').text(players[playerNum].name + " won!");
   console.log("player " + playerNum + " won");
   if (sound) {
     // play sound
@@ -214,15 +225,19 @@ function newRound() {
 }
 
 function addPlayer(playerNum) {
-  if (game.state == "JOINING") {
+  switch (game.state) {
+  case "JOINING":
     var e = $('#joining_player_' + playerNum);
     e.text(players[playerNum].name);
     e.addClass('player_name_closed');
     e.removeClass('player_name_open');
-  }
-  if (game.state == "PLAYING") {
+    break;
+  case "PLAYING":
+  case "EVALUATING":
+  case "ROUNDOVER":
+  case "OVER":
     // set player name
-    var e = $('.player_name#player_' + playerNum);
+    var e = $('.players .player_name#player_' + playerNum);
     var left = positions[game.players].playerX[parseInt(playerNum)];
     var top = positions[game.players].playerY[parseInt(playerNum)];
     e.text(players[playerNum].name);
@@ -234,6 +249,7 @@ function addPlayer(playerNum) {
     // log
     console.log("Player " + playerNum + ", " + players[playerNum].state);
     console.log(players[playerNum].handDeck);
+    break;
   }
 }
 
