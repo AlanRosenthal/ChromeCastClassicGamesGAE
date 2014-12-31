@@ -3,7 +3,6 @@ package com.appspot.c_three_games.domain.war;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.appspot.c_three_games.domain.Message;
 import com.google.api.server.spi.response.BadRequestException;
 import com.google.api.server.spi.response.ConflictException;
 import com.google.api.server.spi.response.ForbiddenException;

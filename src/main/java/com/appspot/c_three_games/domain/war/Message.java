@@ -1,4 +1,4 @@
-package com.appspot.c_three_games.domain;
+package com.appspot.c_three_games.domain.war;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,9 +12,8 @@ import java.util.logging.Logger;
 
 import org.apache.commons.io.IOUtils;
 
-import com.appspot.c_three_games.domain.war.Card;
-import com.appspot.c_three_games.domain.war.Game;
-import com.appspot.c_three_games.domain.war.Player;
+import com.appspot.c_three_games.domain.GCMBody;
+import com.appspot.c_three_games.domain.GCMResponse;
 import com.google.appengine.api.channel.ChannelMessage;
 import com.google.appengine.api.channel.ChannelService;
 import com.google.appengine.api.channel.ChannelServiceFactory;
