@@ -175,10 +175,10 @@ function startGame() {
   updateGame();
 }
 
-function playerWonRound(playerNum) {
-  console.log("player won round: " + playerNum);
+function playerWonRound(playerNum, wonCards) {
+  console.log("player won round: " + playerNum + ": " + wonCards);
   $('.title').text(players[playerNum].name + " won round!");
-  takeCards(playerNum, true);
+  takeCards(playerNum, wonCards, true);
 }
 
 function playerLost(playerNum, sound) {
@@ -366,15 +366,14 @@ function playCard(cardName, playerNum, animate) {
     var index = players[playerNum].handDeck.indexOf(cardName);
     players[playerNum].handDeck.splice(index, 1);
     players[playerNum].discardDeck.push(cardName);
-
+    var handDeckCount = players[playerNum].handDeck.length;
     var warLevel = (players[playerNum].discardDeck.length - 2) % 4 + 1;
     if (warLevel == 1) {
       collapseCards(playerNum, animate);
     }
     flipcard(cardName, '', 'top');
     moveCard(cardName, playerNum, warLevel, animate, function() {
-      // if (isLastCard == true) {
-      if (players[playerNum].handDeck.length == 0) {
+      if (handDeckCount == 0) {
         flipcard(cardName, 'show', '');
       } else {
         if ((warLevel % 4) == 0) {
@@ -412,7 +411,7 @@ function collapseCards(playerNum, animate) {
   });
 }
 
-function takeCards(playerNum, animate) {
+function takeCards(playerNum, wonCards, animate) {
   var cards = {
     'name': [],
     'warLevel': [],
@@ -438,7 +437,9 @@ function takeCards(playerNum, animate) {
     handDeck.reverse().forEach(function(c) {
       flipcard(c, '', 'top');
     });
+    players[playerNum].handDeck = players[playerNum].handDeck.concat(wonCards);
   }, 1000);
+
   var takeCardsHelperFn = function(playerNum, cards, animate) {
     if (cards.name.length > 0) {
       var warLevelRev = cards.warLevel.slice().reverse();
@@ -468,7 +469,6 @@ function takeCards(playerNum, animate) {
             'left': left + 'px',
           });
         }
-        players[playerNum].handDeck.push(c);
         takeCardsHelperFn(playerNum, cards, animate);
       }, 1000);
     }
@@ -518,7 +518,7 @@ function channelMessage(command, args) {
       players.forEach(function(p) {
         setTimeout(function() {
           apiPlayCard(p.id);
-        }, 200 + 200 * p.num);
+        }, Math.random() * 1000);
       });
     }
     break;
@@ -527,10 +527,12 @@ function channelMessage(command, args) {
     playerWar();
     if (auto) {
       players.forEach(function(p) {
+        var count = 0;
         for ( var i = 0; i < 4; i++) {
+          count += Math.random() * 1000;
           setTimeout(function() {
             apiPlayCard(p.id);
-          }, 500 * i + p.num * 200);
+          }, count);
         }
       });
     }
@@ -540,7 +542,8 @@ function channelMessage(command, args) {
     // var gameId = args[0];
     // var playerId = args[1];
     var playerNum = args[2];
-    playerWonRound(playerNum);
+    var cards = args[3].split(",");
+    playerWonRound(playerNum, cards);
     break;
   case "player lost":
     // var gameId = args[0];
@@ -561,28 +564,28 @@ function channelMessage(command, args) {
     newPlayer(playerId, playerNum);
     break;
   case "player played card":
-    // case "war card 1":
-    // case "war card 2":
-    // case "war card 3":
     // var gameId = args[0];
     // var playerId = args[1];
     var playerNum = args[2];
     var card = args[3];
     playCard(card, playerNum, true);
-    // playCard(card, playerNum, false, true);
     break;
-  // case "war card 1 last":
-  // case "war card 2 last":
-  // case "war card 3 last":
-  // var gameId = args[0];
-  // var playerId = args[1];
-  // var playerNum = args[2];
-  // var card = args[3];
-  // playCard(card, playerNum, true, true);
-  // break;
   default:
     console.log("no command match: " + command);
     console.log(args);
     break;
+  }
+}
+
+function toggleauto() {
+  if (!auto) {
+    auto = true;
+    players.forEach(function(p) {
+      setTimeout(function() {
+        apiPlayCard(p.id);
+      }, Math.random() * 1000);
+    });
+  } else {
+    auto = false;
   }
 }
