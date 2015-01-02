@@ -10,6 +10,8 @@ public class Game {
   @Id
   private Long id;
 
+  private String code;
+
   private Date created;
 
   private Date started;
@@ -30,6 +32,14 @@ public class Game {
 
   public void setId(Long id) {
     this.id = id;
+  }
+
+  public String getCode() {
+    return code;
+  }
+
+  public void setCode(String code) {
+    this.code = code;
   }
 
   public Date getCreated() {

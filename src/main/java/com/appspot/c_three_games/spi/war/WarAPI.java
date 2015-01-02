@@ -5,6 +5,7 @@ import static com.appspot.c_three_games.service.OfyService.ofy;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 import com.appspot.c_three_games.Constants;
 import com.appspot.c_three_games.domain.war.Card;
@@ -29,19 +30,16 @@ import com.googlecode.objectify.Key;
 import com.googlecode.objectify.NotFoundException;
 import com.googlecode.objectify.Work;
 
-@Api(
-  name = "warAPI",
-  version = "v1",
-  scopes = { Constants.EMAIL_SCOPE },
-  clientIds = { Constants.WEB_CLIENT_ID, Constants.ANDROID_CLIENT_ID, Constants.IOS_CLIENT_ID },
-  audiences = { Constants.ANDROID_AUDIENCE },
-  description = "War API")
+@Api(name = "warAPI", version = "v1", scopes = {Constants.EMAIL_SCOPE}, clientIds = {
+    Constants.WEB_CLIENT_ID, Constants.ANDROID_CLIENT_ID, Constants.IOS_CLIENT_ID},
+    audiences = {Constants.ANDROID_AUDIENCE}, description = "War API")
 public class WarAPI {
   @ApiMethod(name = "createGame", path = "createGame", httpMethod = HttpMethod.GET)
   public Game createGame() {
     Game game = new Game();
     game.setCreated(new Date());
     game.setState(Game.State.JOINING);
+    game.setCode(generateCode(4));
     ofy().save().entity(game).now();
     return game;
   }
@@ -62,9 +60,9 @@ public class WarAPI {
   }
 
   @ApiMethod(name = "setPlayerRegId", path = "setPlayerRegId", httpMethod = HttpMethod.POST)
-  public Player setPlayerRegId(@Named("gameId") final Long gameId, @Named("playerId") final Long playerId,
-    @Named("regId") final String regId) throws NotFoundException, ForbiddenException, ConflictException,
-    BadRequestException {
+  public Player setPlayerRegId(@Named("gameId") final Long gameId,
+      @Named("playerId") final Long playerId, @Named("regId") final String regId)
+      throws NotFoundException, ForbiddenException, ConflictException, BadRequestException {
     TxResult<Player> result = ofy().transact(new Work<TxResult<Player>>() {
       @Override
       public TxResult<Player> run() {
@@ -99,7 +97,7 @@ public class WarAPI {
 
   @ApiMethod(name = "joinGame", path = "joinGame", httpMethod = HttpMethod.GET)
   public Player joinGame(@Named("gameId") final Long gameId, @Named("name") final String name)
-    throws NotFoundException, ForbiddenException, ConflictException, BadRequestException {
+      throws NotFoundException, ForbiddenException, ConflictException, BadRequestException {
     TxResult<Player> result = ofy().transact(new Work<TxResult<Player>>() {
       @Override
       public TxResult<Player> run() {
@@ -113,8 +111,8 @@ public class WarAPI {
           case OVER:
           case PLAYING:
           case ROUNDOVER:
-            return new TxResult<>(
-              new BadRequestException("Game is in state: " + game.getState() + ", expected JOINING"));
+            return new TxResult<>(new BadRequestException("Game is in state: " + game.getState()
+                + ", expected JOINING"));
           case JOINING:
             break;
         }
@@ -132,10 +130,8 @@ public class WarAPI {
         game.setPlayers(++players);
         ofy().save().entity(game).now();
         ofy().save().entity(player).now();
-        // msgs.add(new Message(game, player, Message.messageType.NEW_PLAYER));
-        // msgs.add(new Message(Message.Type.NEW_PLAYER, Message.Recipient.CHANNEL, game, player));
-        msgs.add(new Message.Builder().setMessageType(Message.ChannelType.NEW_PLAYER).setGame(game).addPlayer(player)
-          .build());
+        msgs.add(new Message.Builder().setMessageType(Message.ChannelType.NEW_PLAYER).setGame(game)
+            .addPlayer(player).build());
         return new TxResult<>(player, msgs);
       }
     });
@@ -143,8 +139,8 @@ public class WarAPI {
   }
 
   @ApiMethod(name = "startGame", path = "startGame", httpMethod = HttpMethod.GET)
-  public Game startGame(@Named("gameId") final Long gameId) throws NotFoundException, ForbiddenException,
-    ConflictException, BadRequestException {
+  public Game startGame(@Named("gameId") final Long gameId) throws NotFoundException,
+      ForbiddenException, ConflictException, BadRequestException {
     TxResult<Game> result = ofy().transact(new Work<TxResult<Game>>() {
       @Override
       public TxResult<Game> run() {
@@ -158,8 +154,8 @@ public class WarAPI {
           case OVER:
           case PLAYING:
           case ROUNDOVER:
-            return new TxResult<>(
-              new BadRequestException("Game is in state: " + game.getState() + ", expected JOINING"));
+            return new TxResult<>(new BadRequestException("Game is in state: " + game.getState()
+                + ", expected JOINING"));
           case JOINING:
             break;
         }
@@ -175,16 +171,11 @@ public class WarAPI {
         for (int i = 0; i < players.size(); i++) {
           players.get(i).setState(Player.State.PLAYING);
         }
-        // msgs.add(new Message(game, Message.messageType.GAME_STARTED));
-        // msgs.add(new Message(Message.Type.GAME_STARTED, Message.Recipient.CHANNEL, game));
-
-        msgs.add(new Message.Builder().setMessageType(Message.ChannelType.GAME_STARTED).setGame(game).build());
-        // msgs.add(new Message(Message.channelType.GAME_STARTED, game));
+        msgs.add(new Message.Builder().setMessageType(Message.ChannelType.GAME_STARTED)
+            .setGame(game).build());
         for (int i = 0; i < players.size(); i++) {
-          msgs.add(new Message.Builder().setMessageType(Message.PlayerType.GAME_STARTED).setGame(game)
-            .addPlayer(players.get(i)).build());
-          // msgs.add(new Message(Message.playerType.GAME_STARTED, game, players.get(i)));
-          // msgs.add(new Message(Message.Type.GAME_STARTED, Message.Recipient.PLAYER, game, players.get(i)));
+          msgs.add(new Message.Builder().setMessageType(Message.PlayerType.GAME_STARTED)
+              .setGame(game).addPlayer(players.get(i)).build());
         }
         ofy().save().entity(game).now();
         ofy().save().entities(players).now();
@@ -196,7 +187,7 @@ public class WarAPI {
 
   @ApiMethod(name = "playCard", path = "playCard", httpMethod = HttpMethod.POST)
   public Player playCard(@Named("gameId") final Long gameId, @Named("playerId") final Long playerId)
-    throws NotFoundException, ForbiddenException, ConflictException, BadRequestException {
+      throws NotFoundException, ForbiddenException, ConflictException, BadRequestException {
     final Queue queue = QueueFactory.getDefaultQueue();
     TxResult<Player> result = ofy().transact(new Work<TxResult<Player>>() {
       @Override
@@ -215,8 +206,8 @@ public class WarAPI {
         switch (game.getState()) {
           case EVALUATING:
           case ROUNDOVER:
-            msgs.add(new Message.Builder().setMessageType(Message.PlayerType.PLAYER_TURN_OVER).setGame(game)
-              .addPlayer(player).build());
+            msgs.add(new Message.Builder().setMessageType(Message.PlayerType.PLAYER_TURN_OVER)
+                .setGame(game).addPlayer(player).build());
             return new TxResult<>(null, msgs);
           case JOINING:
             return new TxResult<>(new BadRequestException("Game hasn't started yet"));
@@ -227,30 +218,30 @@ public class WarAPI {
         }
         switch (player.getState()) {
           case PLAYED:
-            msgs.add(new Message.Builder().setMessageType(Message.PlayerType.PLAYER_TURN_OVER).setGame(game)
-              .addPlayer(player).build());
+            msgs.add(new Message.Builder().setMessageType(Message.PlayerType.PLAYER_TURN_OVER)
+                .setGame(game).addPlayer(player).build());
             return new TxResult<>(players.get(p1.getNum()), msgs);
           case NOTINWAR:
-            msgs.add(new Message.Builder().setMessageType(Message.PlayerType.PLAYER_NOTINWAR).setGame(game)
-              .addPlayer(player).build());
+            msgs.add(new Message.Builder().setMessageType(Message.PlayerType.PLAYER_NOTINWAR)
+                .setGame(game).addPlayer(player).build());
             return new TxResult<>(players.get(p1.getNum()), msgs);
           case LOST:
-            msgs.add(new Message.Builder().setMessageType(Message.PlayerType.PLAYER_ALREADY_LOST).setGame(game)
-              .addPlayer(player).build());
+            msgs.add(new Message.Builder().setMessageType(Message.PlayerType.PLAYER_ALREADY_LOST)
+                .setGame(game).addPlayer(player).build());
             return new TxResult<>(players.get(p1.getNum()), msgs);
           case JOINING:
-            msgs.add(new Message.Builder().setMessageType(Message.PlayerType.GAME_NOTSTARTED).setGame(game)
-              .addPlayer(player).build());
+            msgs.add(new Message.Builder().setMessageType(Message.PlayerType.GAME_NOTSTARTED)
+                .setGame(game).addPlayer(player).build());
             return new TxResult<>(players.get(p1.getNum()), msgs);
           case WON:
-            msgs.add(new Message.Builder().setMessageType(Message.PlayerType.PLAYER_WON).setGame(game)
-              .addPlayer(player).build());
+            msgs.add(new Message.Builder().setMessageType(Message.PlayerType.PLAYER_WON)
+                .setGame(game).addPlayer(player).build());
             return new TxResult<>(players.get(p1.getNum()), msgs);
           case PLAYING: {
             Card card = player.getHandDeck().remove(0);
             player.getDiscardDeck().add(card);
-            msgs.add(new Message.Builder().setMessageType(Message.ChannelType.PLAYER_PLAYED_CARD).setGame(game)
-              .addPlayer(player).addCard(card).build());
+            msgs.add(new Message.Builder().setMessageType(Message.ChannelType.PLAYER_PLAYED_CARD)
+                .setGame(game).addPlayer(player).addCard(card).build());
             player.setState(Player.State.PLAYED);
             break;
           }
@@ -262,8 +253,8 @@ public class WarAPI {
             } else {
               player.setState(Player.State.WAR2);
             }
-            msgs.add(new Message.Builder().setMessageType(Message.ChannelType.PLAYER_PLAYED_CARD).setGame(game)
-              .addPlayer(player).addCard(card).build());
+            msgs.add(new Message.Builder().setMessageType(Message.ChannelType.PLAYER_PLAYED_CARD)
+                .setGame(game).addPlayer(player).addCard(card).build());
             break;
           }
           case WAR2: {
@@ -274,8 +265,8 @@ public class WarAPI {
             } else {
               player.setState(Player.State.WAR3);
             }
-            msgs.add(new Message.Builder().setMessageType(Message.ChannelType.PLAYER_PLAYED_CARD).setGame(game)
-              .addPlayer(player).addCard(card).build());
+            msgs.add(new Message.Builder().setMessageType(Message.ChannelType.PLAYER_PLAYED_CARD)
+                .setGame(game).addPlayer(player).addCard(card).build());
             break;
           }
           case WAR3: {
@@ -286,8 +277,8 @@ public class WarAPI {
             } else {
               player.setState(Player.State.PLAYING);
             }
-            msgs.add(new Message.Builder().setMessageType(Message.ChannelType.PLAYER_PLAYED_CARD).setGame(game)
-              .addPlayer(player).addCard(card).build());
+            msgs.add(new Message.Builder().setMessageType(Message.ChannelType.PLAYER_PLAYED_CARD)
+                .setGame(game).addPlayer(player).addCard(card).build());
             break;
           }
         }
@@ -314,9 +305,10 @@ public class WarAPI {
           game.setState(Game.State.EVALUATING);
           // run evaluateRound
           queue.add(
-            ofy().getTransaction(),
-            TaskOptions.Builder.withUrl("/tasks/war/EvaluateRound").param("gameId", gameId.toString())
-              .method(TaskOptions.Method.POST).countdownMillis(1000));
+              ofy().getTransaction(),
+              TaskOptions.Builder.withUrl("/tasks/war/EvaluateRound")
+                  .param("gameId", gameId.toString()).method(TaskOptions.Method.POST)
+                  .countdownMillis(1000));
         }
 
         // save
@@ -326,5 +318,16 @@ public class WarAPI {
       }
     });
     return result.getResult();
+  }
+
+  private String generateCode(int length) {
+    // TODO: check to make sure this is unquie. 1 in lenght^36 chance. probably fine for now
+    Random random = new Random();
+    String chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    String code = "";
+    for (int i = 0; i < length; i++) {
+      code += chars.charAt(random.nextInt(36));
+    }
+    return code;
   }
 }
