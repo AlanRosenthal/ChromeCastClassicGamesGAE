@@ -49,6 +49,11 @@ public class WarAPI {
     return WarInternalAPI.getGame(gameId);
   }
 
+  @ApiMethod(name = "getGameByCode", path = "getGameByCode", httpMethod = HttpMethod.GET)
+  public Game getGameByCode(@Named("code") String code) {
+    return WarInternalAPI.getGameByCode(code);
+  }
+
   @ApiMethod(name = "getPlayer", path = "getPlayer", httpMethod = HttpMethod.GET)
   public Player getPlayer(@Named("gameId") Long gameId, @Named("playerId") Long playerId) {
     return WarInternalAPI.getPlayer(gameId, playerId);
