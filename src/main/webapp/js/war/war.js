@@ -63,9 +63,21 @@ function updateGame() {
       $('.game_joining').removeClass('hidden');
       $('.game_playing').addClass('hidden');
       $('.title').text("Scan QR Code to Join!");
-      $('.qrcode').append(
-              '<img src="https://api.qrserver.com/v1/create-qr-code/?size=520x520&data='
-                      + game.id + '">');
+      for ( var i = 0; i < 4; i++) {
+        var e = $('#joining_player_' + i);
+        e.text("Open...");
+        e.removeClass('player_name_closed');
+        e.addClass('player_name_open');
+      }
+      $('.qrcode img').attr(
+              'src',
+              'https://api.qrserver.com/v1/create-qr-code/?size=520x520&data='
+                      + game.id);
+      // $('.qrcode').append(
+      // '<img
+      // src="https://api.qrserver.com/v1/create-qr-code/?size=520x520&data='
+      // + game.id + '">');
+
       apiGetPlayers(function() {
         players.forEach(function(p) {
           switch (p.state) {
