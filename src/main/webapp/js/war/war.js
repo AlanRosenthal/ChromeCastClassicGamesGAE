@@ -72,8 +72,9 @@ function updateGame() {
       }
       $('.qrcode img').attr(
               'src',
-              'https://api.qrserver.com/v1/create-qr-code/?size=520x520&data='
+              'https://api.qrserver.com/v1/create-qr-code/?size=420x420&data='
                       + game.id);
+      $('.code').text("Give your friends this code: " + game.code);
       apiGetPlayers(function() {
         players.forEach(function(p) {
           switch (p.state) {
