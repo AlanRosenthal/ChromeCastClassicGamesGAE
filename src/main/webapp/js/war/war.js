@@ -46,8 +46,9 @@ var positions = [{}, {}, {
 }];
 
 var card_z_index = 11;
-var animate_time = 'slow';
+var animate_time = 600;
 var auto = false;
+var logging = true;
 
 function initGame(gameId) {
   game.id = gameId;
@@ -73,11 +74,6 @@ function updateGame() {
               'src',
               'https://api.qrserver.com/v1/create-qr-code/?size=520x520&data='
                       + game.id);
-      // $('.qrcode').append(
-      // '<img
-      // src="https://api.qrserver.com/v1/create-qr-code/?size=520x520&data='
-      // + game.id + '">');
-
       apiGetPlayers(function() {
         players.forEach(function(p) {
           switch (p.state) {
@@ -169,7 +165,7 @@ function updateGame() {
           }
         });
       });
-      console.log("game is over!");
+      log("game is over!");
       break;
     }
   });
@@ -182,13 +178,13 @@ function newPlayer(playerId, playerNum) {
 }
 
 function startGame() {
-  console.log("Game Started!");
+  log("Game Started!");
   $('.title').text("Starting Game...");
   updateGame();
 }
 
 function playerWonRound(playerNum, wonCards) {
-  console.log("player won round: " + playerNum + ": " + wonCards);
+  log("player won round: " + playerNum + ": " + wonCards);
   $('.title').text(players[playerNum].name + " won round!");
   takeCards(playerNum, wonCards, true);
 }
@@ -204,7 +200,7 @@ function playerLost(playerNum, sound) {
   });
   e.removeClass('hidden');
   apiGetPlayer(players[playerNum].id);
-  console.log("player " + playerNum + " lost");
+  log("player " + playerNum + " lost");
   if (sound) {
     // play sound
   }
@@ -221,7 +217,7 @@ function playerWon(playerNum, sound) {
   });
   e.removeClass('hidden');
   $('.title').text(players[playerNum].name + " won!");
-  console.log("player " + playerNum + " won");
+  log("player " + playerNum + " won");
   if (sound) {
     // play sound
   }
@@ -229,11 +225,11 @@ function playerWon(playerNum, sound) {
 
 function playerWar() {
   $('.title').text("War!");
-  console.log("war");
+  log("war");
 }
 
 function newRound() {
-  console.log("new round");
+  log("new round");
 }
 
 function addPlayer(playerNum) {
@@ -259,8 +255,8 @@ function addPlayer(playerNum) {
       'text-align': positions[game.players].playerAlign[parseInt(playerNum)]
     });
     // log
-    console.log("Player " + playerNum + ", " + players[playerNum].state);
-    console.log(players[playerNum].handDeck);
+    log("Player " + playerNum + ", " + players[playerNum].state);
+    log(players[playerNum].handDeck);
     break;
   }
 }
@@ -374,7 +370,7 @@ function moveCard(cardName, playerNum, warLevel, animate, fn) {
 
 function playCard(cardName, playerNum, animate) {
   if (players[playerNum].handDeck.indexOf(cardName) > -1) {
-    console.log("player: " + playerNum + ", card: " + cardName);
+    log("player: " + playerNum + ", card: " + cardName);
     var index = players[playerNum].handDeck.indexOf(cardName);
     players[playerNum].handDeck.splice(index, 1);
     players[playerNum].discardDeck.push(cardName);
@@ -524,7 +520,7 @@ function channelMessage(command, args) {
     // var gameId = args[0];
     newRound();
     players.forEach(function(p) {
-      console.log(p.num + ": " + p.state + ", " + p.handDeck.length);
+      log(p.num + ": " + p.state + ", " + p.handDeck.length);
     });
     if (auto) {
       players.forEach(function(p) {
@@ -583,8 +579,8 @@ function channelMessage(command, args) {
     playCard(card, playerNum, true);
     break;
   default:
-    console.log("no command match: " + command);
-    console.log(args);
+    log("no command match: " + command);
+    log(args);
     break;
   }
 }
@@ -599,5 +595,11 @@ function toggleauto() {
     });
   } else {
     auto = false;
+  }
+}
+
+function log(message) {
+  if (logging) {
+    console.log(message);
   }
 }
