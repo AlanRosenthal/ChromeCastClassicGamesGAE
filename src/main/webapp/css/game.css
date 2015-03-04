@@ -15,7 +15,7 @@
 	top: 0px;
 	left: 0px;
 	width: 560px;
-	height: 520px;
+	height: 420px;
 /* 	background-color: yellow; */
 }
 
@@ -54,10 +54,29 @@
 
 .game_joining > .qrcode {
 	position: absolute;
-	height: 520px;
-	width: 520px;
 	top: 0px;
 	left: 560px;
+	width: 520px;
+	height: 420px;
+}
+
+.qrcode img {
+	position: absolute;
+	height: 420px;
+	width: 420px;
+	top: 0px;
+	left: 50px;
+}
+
+.game_joining .code {
+	position: absolute;
+    top: 445px;
+    left: 0px;
+    width: 1080px;
+    height: 100px;
+	color: red;
+	font-size: 50px;
+	text-align: center;
 }
 
 .game_playing {
@@ -76,7 +95,7 @@
 	position: absolute;
 }
 
-.game_playing > .player_names > .player_name {
+.game_playing > .players > .player_name {
 	width: 590px;
 	height: 35px;
 	position: absolute;
@@ -84,7 +103,10 @@
 	color: red;
 }
 
-.player_lost {
+.game_playing > .players > .player_lost {
 	position: absolute;
 }
 
+.game_playing > .players > .player_won {
+	position: absolute;
+}

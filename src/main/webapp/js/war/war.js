@@ -11,8 +11,8 @@ var positions = [{}, {}, {
   'playerX': [0, 590],
   'playerY': [0, 535],
   'playerAlign': ['left', 'right'],
-  'playerLostX': [0, 730],
-  'playerLostY': [35, 385]
+  'playerResultX': [5, 725],
+  'playerResultY': [40, 380]
 }, {
   // three players
   'handX': [0, 1062, 1062],
@@ -26,8 +26,8 @@ var positions = [{}, {}, {
   'playerX': [0, 590, 590],
   'playerY': [0, 0, 535],
   'playerAlign': ['left', 'right', 'right'],
-  'playerLostX': [0, 730, 730],
-  'playerLostY': [35, 35, 385]
+  'playerResultX': [5, 725, 725],
+  'playerResultY': [40, 40, 380]
 }, {
   // four players
   'handX': [0, 1062, 0, 1062],
@@ -41,13 +41,14 @@ var positions = [{}, {}, {
   'playerX': [0, 590, 0, 590],
   'playerY': [0, 0, 535, 535],
   'playerAlign': ['left', 'right', 'left', 'right'],
-  'playerLostX': [0, 730, 0, 730],
-  'playerLostY': [35, 35, 385, 385]
+  'playerResultX': [5, 725, 5, 725],
+  'playerResultY': [40, 40, 380, 380]
 }];
 
 var card_z_index = 11;
-var animate_time = 'slow';
+var animate_time = 600;
 var auto = false;
+var logging = true;
 
 function initGame(gameId) {
   game.id = gameId;
@@ -63,9 +64,17 @@ function updateGame() {
       $('.game_joining').removeClass('hidden');
       $('.game_playing').addClass('hidden');
       $('.title').text("Scan QR Code to Join!");
-      $('.qrcode').append(
-              '<img src="https://api.qrserver.com/v1/create-qr-code/?size=520x520&data='
-                      + game.id + '">');
+      for ( var i = 0; i < 4; i++) {
+        var e = $('#joining_player_' + i);
+        e.text("Open...");
+        e.removeClass('player_name_closed');
+        e.addClass('player_name_open');
+      }
+      $('.qrcode img').attr(
+              'src',
+              'https://api.qrserver.com/v1/create-qr-code/?size=420x420&data='
+                      + game.id);
+      $('.code').text("Give your friends this code: " + game.code);
       apiGetPlayers(function() {
         players.forEach(function(p) {
           switch (p.state) {
@@ -91,6 +100,7 @@ function updateGame() {
     case "PLAYING":
     case "EVALUATING":
     case "ROUNDOVER":
+      $('.title').text("Let's Play War!");
       $('.game_joining').addClass('hidden');
       $('.game_playing').removeClass('hidden');
       apiGetPlayers(function() {
@@ -129,6 +139,8 @@ function updateGame() {
       });
       break;
     case "OVER":
+      $('.game_joining').addClass('hidden');
+      $('.game_playing').removeClass('hidden');
       apiGetPlayers(function() {
         players.forEach(function(p) {
           switch (p.state) {
@@ -145,16 +157,16 @@ function updateGame() {
             break;
           case "WON":
             addPlayer(p.num);
-            playerWon(p.num);
+            playerWon(p.num, false);
             break;
           case "LOST":
             addPlayer(p.num);
-            playerLost(p.num);
+            playerLost(p.num, false);
             break;
           }
         });
       });
-      console.log("game is over!");
+      log("game is over!");
       break;
     }
   });
@@ -167,57 +179,74 @@ function newPlayer(playerId, playerNum) {
 }
 
 function startGame() {
-  console.log("Game Started!");
+  log("Game Started!");
   $('.title').text("Starting Game...");
   updateGame();
 }
 
-function playerWonRound(playerNum) {
-  console.log("player won round: " + playerNum);
+function playerWonRound(playerNum, wonCards) {
+  log("player won round: " + playerNum + ": " + wonCards);
   $('.title').text(players[playerNum].name + " won round!");
-  takeCards(playerNum, true);
+  takeCards(playerNum, wonCards, true);
 }
 
 function playerLost(playerNum, sound) {
-  var e = $('<img id="player_' + playerNum + '" src="./img/lost.png" />');
-  var top = positions[game.players].playerLostY[parseInt(playerNum)];
-  var left = positions[game.players].playerLostX[parseInt(playerNum)];
+  // var e = $('<img id="player_' + playerNum + '" src="./img/lost.png" />');
+  e = $('.players .player_lost#player_' + playerNum);
+  var top = positions[game.players].playerResultY[parseInt(playerNum)];
+  var left = positions[game.players].playerResultX[parseInt(playerNum)];
   e.css({
     'top': top + 'px',
     'left': left + 'px'
   });
-  e.addClass('player_lost');
-  $('.game_playing').append(e);
+  e.removeClass('hidden');
   apiGetPlayer(players[playerNum].id);
-  console.log("player " + playerNum + " lost");
+  log("player " + playerNum + " lost");
   if (sound) {
     // play sound
   }
 }
 
-function playerWon(playerNum) {
-  console.log("player " + playerNum + " won");
+function playerWon(playerNum, sound) {
+  $('.cards').addClass('hidden');
+  e = $('.players .player_won#player_' + playerNum);
+  var top = positions[game.players].playerResultY[parseInt(playerNum)];
+  var left = positions[game.players].playerResultX[parseInt(playerNum)];
+  e.css({
+    'top': top + 'px',
+    'left': left + 'px'
+  });
+  e.removeClass('hidden');
+  $('.title').text(players[playerNum].name + " won!");
+  log("player " + playerNum + " won");
+  if (sound) {
+    // play sound
+  }
 }
 
 function playerWar() {
   $('.title').text("War!");
-  console.log("war");
+  log("war");
 }
 
 function newRound() {
-  console.log("new round");
+  log("new round");
 }
 
 function addPlayer(playerNum) {
-  if (game.state == "JOINING") {
+  switch (game.state) {
+  case "JOINING":
     var e = $('#joining_player_' + playerNum);
     e.text(players[playerNum].name);
     e.addClass('player_name_closed');
     e.removeClass('player_name_open');
-  }
-  if (game.state == "PLAYING") {
+    break;
+  case "PLAYING":
+  case "EVALUATING":
+  case "ROUNDOVER":
+  case "OVER":
     // set player name
-    var e = $('.player_name#player_' + playerNum);
+    var e = $('.players .player_name#player_' + playerNum);
     var left = positions[game.players].playerX[parseInt(playerNum)];
     var top = positions[game.players].playerY[parseInt(playerNum)];
     e.text(players[playerNum].name);
@@ -227,8 +256,9 @@ function addPlayer(playerNum) {
       'text-align': positions[game.players].playerAlign[parseInt(playerNum)]
     });
     // log
-    console.log("Player " + playerNum + ", " + players[playerNum].state);
-    console.log(players[playerNum].handDeck);
+    log("Player " + playerNum + ", " + players[playerNum].state);
+    log(players[playerNum].handDeck);
+    break;
   }
 }
 
@@ -341,19 +371,18 @@ function moveCard(cardName, playerNum, warLevel, animate, fn) {
 
 function playCard(cardName, playerNum, animate) {
   if (players[playerNum].handDeck.indexOf(cardName) > -1) {
-    console.log("player: " + playerNum + ", card: " + cardName);
+    log("player: " + playerNum + ", card: " + cardName);
     var index = players[playerNum].handDeck.indexOf(cardName);
     players[playerNum].handDeck.splice(index, 1);
     players[playerNum].discardDeck.push(cardName);
-
+    var handDeckCount = players[playerNum].handDeck.length;
     var warLevel = (players[playerNum].discardDeck.length - 2) % 4 + 1;
     if (warLevel == 1) {
       collapseCards(playerNum, animate);
     }
     flipcard(cardName, '', 'top');
     moveCard(cardName, playerNum, warLevel, animate, function() {
-      // if (isLastCard == true) {
-      if (players[playerNum].handDeck.length == 0) {
+      if (handDeckCount == 0) {
         flipcard(cardName, 'show', '');
       } else {
         if ((warLevel % 4) == 0) {
@@ -391,7 +420,7 @@ function collapseCards(playerNum, animate) {
   });
 }
 
-function takeCards(playerNum, animate) {
+function takeCards(playerNum, wonCards, animate) {
   var cards = {
     'name': [],
     'warLevel': [],
@@ -417,7 +446,9 @@ function takeCards(playerNum, animate) {
     handDeck.reverse().forEach(function(c) {
       flipcard(c, '', 'top');
     });
+    players[playerNum].handDeck = players[playerNum].handDeck.concat(wonCards);
   }, 1000);
+
   var takeCardsHelperFn = function(playerNum, cards, animate) {
     if (cards.name.length > 0) {
       var warLevelRev = cards.warLevel.slice().reverse();
@@ -447,7 +478,6 @@ function takeCards(playerNum, animate) {
             'left': left + 'px',
           });
         }
-        players[playerNum].handDeck.push(c);
         takeCardsHelperFn(playerNum, cards, animate);
       }, 1000);
     }
@@ -491,13 +521,13 @@ function channelMessage(command, args) {
     // var gameId = args[0];
     newRound();
     players.forEach(function(p) {
-      console.log(p.num + ": " + p.state + ", " + p.handDeck.length);
+      log(p.num + ": " + p.state + ", " + p.handDeck.length);
     });
     if (auto) {
       players.forEach(function(p) {
         setTimeout(function() {
           apiPlayCard(p.id);
-        }, 200 + 200 * p.num);
+        }, Math.random() * 1000);
       });
     }
     break;
@@ -506,10 +536,12 @@ function channelMessage(command, args) {
     playerWar();
     if (auto) {
       players.forEach(function(p) {
+        var count = 0;
         for ( var i = 0; i < 4; i++) {
+          count += Math.random() * 1000;
           setTimeout(function() {
             apiPlayCard(p.id);
-          }, 500 * i + p.num * 200);
+          }, count);
         }
       });
     }
@@ -519,7 +551,8 @@ function channelMessage(command, args) {
     // var gameId = args[0];
     // var playerId = args[1];
     var playerNum = args[2];
-    playerWonRound(playerNum);
+    var cards = args[3].split(",");
+    playerWonRound(playerNum, cards);
     break;
   case "player lost":
     // var gameId = args[0];
@@ -540,28 +573,34 @@ function channelMessage(command, args) {
     newPlayer(playerId, playerNum);
     break;
   case "player played card":
-    // case "war card 1":
-    // case "war card 2":
-    // case "war card 3":
     // var gameId = args[0];
     // var playerId = args[1];
     var playerNum = args[2];
     var card = args[3];
     playCard(card, playerNum, true);
-    // playCard(card, playerNum, false, true);
     break;
-  // case "war card 1 last":
-  // case "war card 2 last":
-  // case "war card 3 last":
-  // var gameId = args[0];
-  // var playerId = args[1];
-  // var playerNum = args[2];
-  // var card = args[3];
-  // playCard(card, playerNum, true, true);
-  // break;
   default:
-    console.log("no command match: " + command);
-    console.log(args);
+    log("no command match: " + command);
+    log(args);
     break;
+  }
+}
+
+function toggleauto() {
+  if (!auto) {
+    auto = true;
+    players.forEach(function(p) {
+      setTimeout(function() {
+        apiPlayCard(p.id);
+      }, Math.random() * 1000);
+    });
+  } else {
+    auto = false;
+  }
+}
+
+function log(message) {
+  if (logging) {
+    console.log(message);
   }
 }

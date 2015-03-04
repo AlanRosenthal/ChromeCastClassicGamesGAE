@@ -4,11 +4,15 @@ import java.util.Date;
 
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
+import com.googlecode.objectify.annotation.Index;
 
 @Entity
 public class Game {
   @Id
   private Long id;
+
+  @Index
+  private String code;
 
   private Date created;
 
@@ -30,6 +34,14 @@ public class Game {
 
   public void setId(Long id) {
     this.id = id;
+  }
+
+  public String getCode() {
+    return code;
+  }
+
+  public void setCode(String code) {
+    this.code = code;
   }
 
   public Date getCreated() {

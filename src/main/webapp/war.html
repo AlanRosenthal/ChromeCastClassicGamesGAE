@@ -11,10 +11,9 @@
 	    <script src="https://apis.google.com/js/client.js?onload=initWarAPI"></script>
 	    <link rel="stylesheet" type="text/css" href="/css/main.css"></link>
 	    <link rel="stylesheet" type="text/css" href="/css/game.css"></link>
-	    <link rel="stylesheet" type="text/css" href="/css/players.css"></link>
 	    <link rel="stylesheet" type="text/css" href="/css/cards.css"></link>
 	</head>
-	<body>
+	<body style="background-color:black;">
 		<div class="board">
 			<div class="title"></div>
 			<div class="game_playing hidden">
@@ -227,9 +226,16 @@
 						<img class="front_card" src="../img/cards/KS.png" />
 						<img class="back_card" src="../img/cards/Back-Blue.png" />
 					</div>
-					<div class="lost hidden" id="player_0"><img src="../img/lost.png" /></div>
 				</div>
-				<div class="player_names">
+				<div class="players">
+					<div class="player_lost hidden" id="player_0"><img src="../img/lost.png" /></div>
+					<div class="player_lost hidden" id="player_1"><img src="../img/lost.png" /></div>
+					<div class="player_lost hidden" id="player_2"><img src="../img/lost.png" /></div>
+					<div class="player_lost hidden" id="player_3"><img src="../img/lost.png" /></div>
+					<div class="player_won hidden" id="player_0"><img src="../img/won.png" /></div>
+					<div class="player_won hidden" id="player_1"><img src="../img/won.png" /></div>
+					<div class="player_won hidden" id="player_2"><img src="../img/won.png" /></div>
+					<div class="player_won hidden" id="player_3"><img src="../img/won.png" /></div>
 					<span class="player_name" id="player_0"></span>
 					<span class="player_name" id="player_1"></span>
 					<span class="player_name" id="player_2"></span>
@@ -240,13 +246,16 @@
 				<div class="players">
 					<span class="player_title">Players</span>
 					<ol class="player_names">
-						<li><span class="player_name_open" id="joining_player_0">Open...</span></li>
-						<li><span class="player_name_open" id="joining_player_1">Open...</span></li>
-						<li><span class="player_name_open" id="joining_player_2">Open...</span></li>
-						<li><span class="player_name_open" id="joining_player_3">Open...</span></li>
+						<li><span class="player_name_open" id="joining_player_0"></span></li>
+						<li><span class="player_name_open" id="joining_player_1"></span></li>
+						<li><span class="player_name_open" id="joining_player_2"></span></li>
+						<li><span class="player_name_open" id="joining_player_3"></span></li>
 					</ol>
 				</div>
-				<div class="qrcode"></div>
+				<div class="qrcode">
+					<img />
+				</div>
+				<div class="code"></div>
 			</div>
 		</div>
 		<script src="/js/war/channel.js"></script>

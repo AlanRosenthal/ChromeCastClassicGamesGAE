@@ -12,8 +12,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.appspot.c_three_games.domain.Message;
 import com.appspot.c_three_games.domain.war.Game;
+import com.appspot.c_three_games.domain.war.Message;
 import com.appspot.c_three_games.domain.war.Player;
 import com.appspot.c_three_games.domain.war.TxResult;
 import com.appspot.c_three_games.spi.war.WarInternalAPI;

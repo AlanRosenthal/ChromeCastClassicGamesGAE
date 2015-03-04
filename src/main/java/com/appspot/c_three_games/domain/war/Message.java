@@ -1,4 +1,4 @@
-package com.appspot.c_three_games.domain;
+package com.appspot.c_three_games.domain.war;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,9 +12,9 @@ import java.util.logging.Logger;
 
 import org.apache.commons.io.IOUtils;
 
-import com.appspot.c_three_games.domain.war.Card;
-import com.appspot.c_three_games.domain.war.Game;
-import com.appspot.c_three_games.domain.war.Player;
+import com.appspot.c_three_games.Constants;
+import com.appspot.c_three_games.domain.GCMBody;
+import com.appspot.c_three_games.domain.GCMResponse;
 import com.google.appengine.api.channel.ChannelMessage;
 import com.google.appengine.api.channel.ChannelService;
 import com.google.appengine.api.channel.ChannelServiceFactory;
@@ -206,31 +206,6 @@ public class Message {
     }
   }
 
-  //
-  // public Message(ChannelType cType, Game game) {
-  // this.cType = cType;
-  // this.game = game;
-  // }
-  //
-  // public Message(ChannelType cType, Game game, Player player) {
-  // this.cType = cType;
-  // this.game = game;
-  // this.player = player;
-  // }
-  //
-  // public Message(ChannelType cType, Game game, Player player, Card card) {
-  // this.cType = cType;
-  // this.game = game;
-  // this.player = player;
-  // this.card = card;
-  // }
-  //
-  // public Message(PlayerType pType, Game game, Player player) {
-  // this.pType = pType;
-  // this.game = game;
-  // this.player = player;
-  // }
-
   public void send() {
     if (channelMessage != null) {
       ChannelService cs = ChannelServiceFactory.getChannelService();
@@ -246,8 +221,7 @@ public class Message {
         url = new URL("https://android.googleapis.com/gcm/send");
         urlConnection = (HttpURLConnection) url.openConnection();
         urlConnection.setRequestMethod("POST");
-        urlConnection.setRequestProperty("Authorization", "key="
-            + "AIzaSyB8QE8fvKcKIAghdXFSEnvBfe25mdkFhgU");
+        urlConnection.setRequestProperty("Authorization", "key=" + Constants.GCM_KEY);
         urlConnection.setRequestProperty("Content-Type", "application/json");
         urlConnection.setDoOutput(true);
         OutputStreamWriter writer = new OutputStreamWriter(urlConnection.getOutputStream());
@@ -255,7 +229,6 @@ public class Message {
         writer.close();
         InputStream is = urlConnection.getInputStream();
         gcmResponse = gson.fromJson(IOUtils.toString(is), GCMResponse.class);
-        // log.warning(gcmResponse.toString());
         IOUtils.closeQuietly(is);
       } catch (MalformedURLException e) {
         e.printStackTrace();
@@ -264,109 +237,4 @@ public class Message {
       }
     }
   }
-  // public void sendMessage() {
-  // if (cType != null) {
-  // String message = "";
-  // switch (cType) {
-  // case GAME_STARTED:
-  // message = String.format("game started:%s:", game.getId());
-  // break;
-  // case NEW_ROUND_STARTED:
-  // message = String.format("new round started:%s:", game.getId());
-  // break;
-  // case PLAYER_LOST:
-  // message = String.format("player lost:%s:%s:%s:", game.getId(), player.getId(),
-  // player.getNum());
-  // break;
-  // case PLAYER_PLAYED_CARD:
-  // message = String.format("player played card:%s:%s:%s:%s:", game.getId(), player.getId(),
-  // player.getNum(),
-  // card.getName());
-  // break;
-  // case PLAYER_WON:
-  // message = String.format("player won:%s:%s:%s:", game.getId(), player.getId(), player.getNum());
-  // break;
-  // case PLAYER_WON_ROUND:
-  // message = String.format("player won round:%s:%s:%s:", game.getId(), player.getId(),
-  // player.getNum());
-  // break;
-  // case WAR:
-  // message = String.format("war:%s:", game.getId());
-  // break;
-  // case NEW_PLAYER:
-  // message = String.format("new player:%s:%s:%s:", game.getId(), player.getId(), player.getNum());
-  // break;
-  // default:
-  // break;
-  // }
-  // ChannelService cs = ChannelServiceFactory.getChannelService();
-  // cs.sendMessage(new ChannelMessage(game.getId().toString(), message));
-  // }
-  // if (pType != null) {
-  // Gson gson = new Gson();
-  // GCM body = new GCM();
-  // GCM response = new GCM();
-  // switch (pType) {
-  // case PLAYER_ALREADY_LOST:
-  // body.registration_ids.add(player.getRegId());
-  // body.data.put("gameId", game.getId());
-  // body.data.put("playerId", player.getId());
-  // body.data.put("message", "player already lost");
-  // break;
-  // case PLAYER_LOST:
-  // body.registration_ids.add(player.getRegId());
-  // body.data.put("gameId", game.getId());
-  // body.data.put("playerId", player.getId());
-  // body.data.put("message", "player lost");
-  // break;
-  // case PLAYER_NOTINWAR:
-  // body.registration_ids.add(player.getRegId());
-  // body.data.put("gameId", game.getId());
-  // body.data.put("playerId", player.getId());
-  // body.data.put("message", "player notinwar");
-  // break;
-  // case PLAYER_TURN_OVER:
-  // body.registration_ids.add(player.getRegId());
-  // body.data.put("gameId", game.getId());
-  // body.data.put("playerId", player.getId());
-  // body.data.put("message", "player turn over");
-  // break;
-  // case PLAYER_WON:
-  // body.registration_ids.add(player.getRegId());
-  // body.data.put("gameId", game.getId());
-  // body.data.put("playerId", player.getId());
-  // body.data.put("message", "player won");
-  // break;
-  // case GAME_STARTED:
-  // body.registration_ids.add(player.getRegId());
-  // body.data.put("gameId", game.getId());
-  // body.data.put("playerId", player.getId());
-  // body.data.put("message", "game started");
-  // break;
-  // }
-  // URL url;
-  // HttpURLConnection urlConnection = null;
-  // try {
-  // url = new URL("https://android.googleapis.com/gcm/send");
-  // urlConnection = (HttpURLConnection) url.openConnection();
-  // urlConnection.setRequestMethod("POST");
-  // urlConnection.setRequestProperty("Authorization", "key=" +
-  // "AIzaSyB8QE8fvKcKIAghdXFSEnvBfe25mdkFhgU");
-  // urlConnection.setRequestProperty("Content-Type", "application/json");
-  // urlConnection.setDoOutput(true);
-  // OutputStreamWriter writer = new OutputStreamWriter(urlConnection.getOutputStream());
-  // writer.write(gson.toJson(body));
-  // writer.close();
-  // InputStream is = urlConnection.getInputStream();
-  // response = gson.fromJson(IOUtils.toString(is), GCM.class);
-  // log.warning(response.toString());
-  // IOUtils.closeQuietly(is);
-  // } catch (MalformedURLException e) {
-  // e.printStackTrace();
-  // } catch (IOException e) {
-  // e.printStackTrace();
-  // }
-  //
-  // }
-  // }
 }
