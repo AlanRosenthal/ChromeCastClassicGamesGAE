@@ -151,6 +151,7 @@ public class WarAPI {
   @ApiMethod(name = "startGame", path = "startGame", httpMethod = HttpMethod.GET)
   public Game startGame(@Named("gameId") final Long gameId) throws NotFoundException,
       ForbiddenException, ConflictException, BadRequestException {
+    // TODO: can't start game if there aren't two players!
     TxResult<Game> result = ofy().transact(new Work<TxResult<Game>>() {
       @Override
       public TxResult<Game> run() {
@@ -189,7 +190,6 @@ public class WarAPI {
         }
         ofy().save().entity(game).now();
         ofy().save().entities(players).now();
-        log.info("start game messages: " + msgs.size());
         return new TxResult<>(game, msgs);
       }
     });
