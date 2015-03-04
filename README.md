@@ -7,7 +7,7 @@ The backend server running on Google App Engine
 
 * Update file ./src/main/webapp/WEB-INF/appengine-web.xml
  * Replace your-app-id with your App Engine ID
- * eg: <application>your-app-id</application> -> <application>c-three-games-test</application>
+ * eg: your-app-id -> c-three-games-test
 * Update file ./src/main/java/com/appspot/c_three_games/Constants.java
  * GCM_KEY needs to be set to your private GCM key.
  * http://developer.android.com/google/gcm/gs.html
