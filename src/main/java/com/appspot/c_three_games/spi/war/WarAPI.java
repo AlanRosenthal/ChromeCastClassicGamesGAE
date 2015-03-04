@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
+import java.util.logging.Logger;
 
 import com.appspot.c_three_games.Constants;
 import com.appspot.c_three_games.domain.war.Card;
@@ -34,6 +35,10 @@ import com.googlecode.objectify.Work;
     Constants.WEB_CLIENT_ID, Constants.ANDROID_CLIENT_ID, Constants.IOS_CLIENT_ID},
     audiences = {Constants.ANDROID_AUDIENCE}, description = "War API")
 public class WarAPI {
+  @SuppressWarnings("unused")
+  private static final Logger log = Logger.getLogger(Message.class.getName());
+
+
   @ApiMethod(name = "createGame", path = "createGame", httpMethod = HttpMethod.GET)
   public Game createGame() {
     Game game = new Game();
@@ -184,6 +189,7 @@ public class WarAPI {
         }
         ofy().save().entity(game).now();
         ofy().save().entities(players).now();
+        log.info("start game messages: " + msgs.size());
         return new TxResult<>(game, msgs);
       }
     });
@@ -326,12 +332,13 @@ public class WarAPI {
   }
 
   private String generateCode(int length) {
-    // TODO: check to make sure this is unquie. 1 in lenght^36 chance. probably fine for now
+    // TODO: check to make sure this is unquie. 1 in lenght^34 chance. probably fine for now
+    // No 0 or 1, they look like letters
     Random random = new Random();
-    String chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    String chars = "23456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     String code = "";
     for (int i = 0; i < length; i++) {
-      code += chars.charAt(random.nextInt(36));
+      code += chars.charAt(random.nextInt(34));
     }
     return code;
   }
