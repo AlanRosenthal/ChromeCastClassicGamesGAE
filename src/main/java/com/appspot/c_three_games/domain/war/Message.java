@@ -12,6 +12,7 @@ import java.util.logging.Logger;
 
 import org.apache.commons.io.IOUtils;
 
+import com.appspot.c_three_games.Constants;
 import com.appspot.c_three_games.domain.GCMBody;
 import com.appspot.c_three_games.domain.GCMResponse;
 import com.google.appengine.api.channel.ChannelMessage;
@@ -220,8 +221,7 @@ public class Message {
         url = new URL("https://android.googleapis.com/gcm/send");
         urlConnection = (HttpURLConnection) url.openConnection();
         urlConnection.setRequestMethod("POST");
-        urlConnection.setRequestProperty("Authorization", "key="
-            + "AIzaSyB8QE8fvKcKIAghdXFSEnvBfe25mdkFhgU");
+        urlConnection.setRequestProperty("Authorization", "key=" + Constants.GCM_KEY);
         urlConnection.setRequestProperty("Content-Type", "application/json");
         urlConnection.setDoOutput(true);
         OutputStreamWriter writer = new OutputStreamWriter(urlConnection.getOutputStream());
